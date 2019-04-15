@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block scripts_base %}
+{% block script_anonimo %}{% endblock %}
+{% endblock %}
+
+<!-- Encapsulamos el titulo_base -->
+{% block titulo_base %}
+{% block titulo_anonimo %}{% endblock %}
+{% endblock %}
+
+{% block barra_nav_base %}
+<!-- Solo añadimos los botones de registro e inicio de sesión en la barra de navegación-->
+<ul class="nav navbar-nav navbar-right">
+    <li><a href="/registrarse"><span class="glyphicon glyphicon-user"></span> Registrate</a></li>
+    <li><a href="/identificarse"><span class="glyphicon glyphicon-log-in"></span> Identifícate</a></li>
+</ul>
+{% endblock %}
+
+<!-- Encapsulamos el contenido_principal_base -->
+{% block contenido_principal_base %}
+{% block contenido_principal_anonimo %}{% endblock %}
+{% endblock %}
