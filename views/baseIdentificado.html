@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block scripts_base %}
+{% block script_identificado %}{% endblock %}
+{% endblock %}
+
+<!-- Encapsulamos el titulo_base -->
+{% block titulo_base %}
+{% block titulo_identificado %}{% endblock %}
+{% endblock %}
+
+
+{% block barra_nav_base %}
+{% block barra_nav_identificado %}{% endblock %}
+<ul class="nav navbar-nav navbar-right">
+
+    <li  id="profile-menu" class="dropdown"><a
+            class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" href="#">
+        <img src="/img/student-48.png" class="rounded-circle z-depth-0" alt="avatar image" />
+        <span class="caret"></span>
+    </a>
+        <ul class="dropdown-menu">
+            <li><a id="btn_profile" href="/user/profile" >Perfil<span class="glyphicon glyphicon-user"></span>
+            </a></li>
+            <li>
+                <a id="btn_logout" href="/desconectar" >Desconectar
+                    <span class="glyphicon glyphicon-log-out"></span>   </a>
+            </li>
+        </ul>
+</ul>
+{% endblock %}
+
+{% block contenido_principal_base %}
+{% block contenido_principal_identificado %}{% endblock %}
+{% endblock %}

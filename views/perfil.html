@@ -1,0 +1,52 @@
+{% extends "baseUsuarioEstandar.html" %}
+{% block contenido_principal_usuarioEstandar %}
+	<div class="container" style="text-align: center">
+		<h2 id="profile_title">{{usuario.name}}, {{usuario.lastname}}</h2>
+		<div class="row">
+			<div class="col-md-6">
+				<h3> Detalles</h3>
+				<ul class="list-group">
+				<li class="list-group-item " >
+					<p>Emails:</p>
+					 <b>{{usuario.email}}</b>
+				
+				</li >
+				<li class="list-group-item">
+					<p >Nombre:</p>
+					 <b>{{usuario.name}}</b>
+				</li>
+				<li class="list-group-item ">
+					<p>Apellidos:</p>
+					 <b>{{usuario.lastname}}</b>
+				</li>
+				<li class="list-group-item ">
+					<p>Saldo:</p>
+					<b>{{usuario.cash}} €</b>
+				</li>
+				</ul>
+			</div>
+			
+				<div class="col-md-6">
+					<h3> Opciones</h3>
+						<ul class="list-group">
+							<li class="list-group-item">
+							  <a href="/offer/add" class="list-group-item list-group-item-action">Crear oferta</a>
+						  	</li>
+							  <li class="list-group-item ">
+							  <a href="/offer/list" class="list-group-item">Ver ofertas disponibles</a>
+						  	</li>
+						  	<li class="list-group-item ">
+							  <a href="/offer/my" class="list-group-item list-group-item-action">Ver tus ofertas</a>
+						  	</li>
+						  	<li class="list-group-item ">
+							  <a href="/offer/purchased" class="list-group-item list-group-item-action">Ver tus compras</a>
+						  	</li>
+						</ul>
+						
+
+				</div>
+			</div>
+		
+		
+	</div>
+{% endblock %}
