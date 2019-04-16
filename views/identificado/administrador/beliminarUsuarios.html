@@ -1,0 +1,40 @@
+{% extends "baseUsuarioAdministrador.html" %}
+
+{% block titulo_usuarioAdministrador %} Eliminar usuarios {% endblock %}
+
+{% block contenido_principal_usuarioAdministrador %}
+	<div class="container">
+		<h2>Usuarios</h2>
+		<p>Seleccione los usuarios que desea eliminar:</p>
+		
+		<form class="form-horizontal" method="post" action="/eliminarUsuarios">
+		<div class="table-responsive" >
+			<table class="table table-hover" id="tableUsers">
+				<thead>
+					<tr>
+						<th></th>
+						<th class="text-center">Email</th>
+						<th class="text-center">Nombre</th>
+						<th class="text-center">Apellidos</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for user in usuarios %}
+					<tr>
+						<td class="text-center"><input type="checkbox" name="checkEmail" value={{user.email}}></td>
+						<td class="text-center">{{user.email}}</td>
+						<td class="text-center">{{user.name}}</td>
+						<td class="text-center">{{user.lastname}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button id="btn_eliminar" type="submit" class="btn btn-primary" th:text="#{users.delete.btn_dlt}">Eliminar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

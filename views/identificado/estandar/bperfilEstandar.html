@@ -1,4 +1,6 @@
 {% extends "baseUsuarioEstandar.html" %}
+{% block titulo_usuarioEstandar %} Perfil: {{usuario.name}} {{usuario.lastname}}{% endblock %}
+
 {% block contenido_principal_usuarioEstandar %}
 	<div class="container" style="text-align: center">
 		<h2 id="profile_title">{{usuario.name}}, {{usuario.lastname}}</h2>

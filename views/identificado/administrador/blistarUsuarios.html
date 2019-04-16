@@ -1,0 +1,31 @@
+{% extends "baseUsuarioAdministrador.html" %}
+
+{% block titulo_usuarioAdministrador %} Listado de usuarios {% endblock %}
+
+{% block contenido_principal_usuarioAdministrador %}
+<div class="container">
+		<h2 id="title_listUsers">Usuarios</h2>
+		<p id="title_explain_listUsers">Los usuarios que actualmente figuran en el sistema son los siguientes:</p>
+		<div class="table-responsive">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th class="text-center">Email</th>
+						<th class="text-center">Nombre</th>
+						<th class="text-center"rs
+						>Apellidos</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for user in usuarios %}
+					<tr>
+						<td class="text-center">{{user.email}}</td>
+						<td class="text-center">{{user.name}}</td>
+						<td class="text-center">{{user.lastname}}</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+{% endblock %}

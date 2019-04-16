@@ -1,17 +1,17 @@
 module.exports=function(app,swig,usuariosBD){
     app.get("/registrarse",function(req,res){
-        var respuesta=swig.renderFile('views/bregistro.html',{});
+        var respuesta=swig.renderFile('views/anonimo/bregistro.html',{});
         res.send(respuesta);
     });
 
     app.post("/registrarse",function(req,res){
         //Validaciones
-        if(req.body.email==="")
+        if(req.body.email.toString().replace(" ","").length===0)
         {
             res.redirect("/registrarse?error=noEmail");
             return;
         }
-        if(req.body.name==="")
+        if(!req.body.name.toString().trim().length) //No lleva solo espacios
         {
             res.redirect("/registrarse?error=noNombre");
             return;
@@ -23,7 +23,7 @@ module.exports=function(app,swig,usuariosBD){
             return;
         }
 
-        if(req.body.lastName==="")
+        if(!req.body.lastName.toString().trim().length)
         {
             res.redirect("/registrarse?error=noApellido");
             return;
@@ -35,12 +35,12 @@ module.exports=function(app,swig,usuariosBD){
             return;
         }
 
-        if(req.body.password==="")
+        if(!req.body.password.toString().trim().length)
         {
             res.redirect("/registrarse?error=noContraseña");
             return;
         }
-        if(req.body.passwordConfirm==="")
+        if(!req.body.passwordConfirm.toString().trim().length)
         {
             res.redirect("/registrarse?error=noContraseñaConfirmar");
             return;
@@ -51,13 +51,13 @@ module.exports=function(app,swig,usuariosBD){
             return;
         }
 
-        if(req.body.password.toString().length<8 || req.body.password.toString().length>20)
+        if(req.body.password.toString().length<5 || req.body.password.toString().length>20)
         {
             res.redirect("/registrarse?error=tamañoContraseña");
             return;
         }
 
-        var usuario = crearUsuario(req,"usuario");
+        var usuario = crearUsuario(req,'U');
 
         var criterio={email:usuario.email };
         usuariosBD.obtenerUsuarios(criterio,function(usuarios)
@@ -100,22 +100,31 @@ module.exports=function(app,swig,usuariosBD){
     app.get("/perfil",function(req,res){
         var criterio={email:req.session.usuario};
         usuariosBD.obtenerUsuarios(criterio,function(usuarios) {
-            if(usuarios.length===0)
+            if(usuarios.length===0 || usuarios.length>1)
             {
-                res.send("ERROR") //<-------------------------------------- CAMBIAR
+                res.send("ERROR"); //<-------------------------------------- CAMBIAR
             }else{
-                var respuesta=swig.renderFile('views/perfil.html',{usuario:usuarios[0]});
-                res.send(respuesta);
+                if(usuarios[0].rol==='U') {
+                    var respuesta = swig.renderFile('views/identificado/estandar/bperfilEstandar.html', {usuario: usuarios[0]});
+                    res.send(respuesta);
+                }else{
+                    if(usuarios[0].rol==='A') {
+                        var respuesta = swig.renderFile('views/identificado/administrador/bperfilAdministrador.html', {usuario: usuarios[0]});
+                        res.send(respuesta);
+                }else{
+                    res.send("ERROR: NO EXISTE ESE ROL");
+                    }
+                }
             }
         });
     });
 
-    app.get("/identificar",function (req,res) {
-        var respuesta=swig.renderFile('views/bidentificar.html',{});
+    app.get("/identificarse",function (req,res) {
+        var respuesta=swig.renderFile('views/anonimo/bidentificar.html',{});
         res.send(respuesta);
     });
 
-    app.post("/identificar",function (req,res) {
+    app.post("/identificarse",function (req,res) {
         var seguro = app.get("crypto").createHmac('sha256', app.get('clave'))
             .update(req.body.password).digest('hex');
         var criterio = {
@@ -125,7 +134,7 @@ module.exports=function(app,swig,usuariosBD){
         usuariosBD.obtenerUsuarios(criterio, function(usuarios) {
             if (usuarios == null || usuarios.length == 0) {
                 req.session.usuario = null;
-                res.redirect("/identificar?error=Email-password incorrecto");
+                res.redirect("/identificarse?error=Email-password incorrecto");
                 app.get("log").info("Intento de acceso no autorizado a la cuenta:"+req.body.email);
             } else {
                 req.session.usuario = usuarios[0].email;
@@ -135,10 +144,74 @@ module.exports=function(app,swig,usuariosBD){
         });
     });
 
-    app.get('/desconectar', function (req, res) {
-
+    app.get('/desconectarse', function (req, res) {
         app.get('log').info(req.session.usuario +" se ha desconectado del sistema");
         req.session.usuario = null;
-        res.redirect("/identificar");
+        res.redirect("/identificarse");
     });
+
+    app.get("/usuarios",function(req,res){
+        usuariosBD.obtenerUsuarios({},function(usuarios){
+           if(usuarios==null)
+           {
+               res.send("ERROR");
+           }else{
+               let actual = null;
+               var i;
+               for(i=0;i<usuarios.length;i++)
+               {
+                   if(req.session.usuario===usuarios[i].email)
+                   {
+                       actual=usuarios[i];
+                   }
+               }
+               var respuesta=swig.renderFile("views/identificado/administrador/blistarUsuarios.html",{usuario:actual, usuarios:usuarios});
+               res.send(respuesta);
+           }
+        });
+    });
+
+    app.get("/eliminarUsuarios",function (req,res)
+    {
+        usuariosBD.obtenerUsuarios({},function(usuarios){
+            if(usuarios==null)
+            {
+                res.send("ERROR");
+            }else{
+                let arrayUsuarios = [];
+                let actual=null;
+                var i;
+                for(i=0;i<usuarios.length;i++)
+                {
+                    if(req.session.usuario!=usuarios[i].email)
+                    {
+                        arrayUsuarios.push(usuarios[i]);
+                    }else{
+                        actual=usuarios[i];
+                    }
+                }
+                var respuesta=swig.renderFile("views/identificado/administrador/beliminarUsuarios.html",{usuario:actual, usuarios:arrayUsuarios});
+                res.send(respuesta);
+            }
+        });
+    });
+
+    app.post("/eliminarUsuarios",function (req,res) {
+        if(typeof (req.body.checkEmail)=="string")// Si solo se selecciona un check box se muestra como un string -> $in no funciona
+        {
+            var criterio={email: req.body.checkEmail};
+        }else{
+            var criterio={email:{$in: req.body.checkEmail}};
+        }
+
+        usuariosBD.eliminarUsuario(criterio,function (result) {
+            if(result==null)
+            {
+                res.send("ERROR AL ELIMINAR USUARIOS");
+            }else{
+                res.redirect("/eliminarUsuarios");
+            }
+        });
+
+    })
 }

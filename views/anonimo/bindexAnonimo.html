@@ -1,0 +1,24 @@
+{% extends "baseAnonimo.html" %}
+
+{% block titulo_anonimo %}My Wallapop{% endblock %}
+{% block contenido_principal_anonimo %}
+	<div class="container" style="text-align: center">
+		<h2 id="title_home" >Bienvenido a My Wallapop</h2>
+		<p id="description_home">MyWallapop, la web de compra-venta más grande del país en
+			la que millones de usuarios compran y venden productos nuevos,
+			productos de segunda mano. Usando MyWallapop ahorrarás dinero y conseguirás un
+			ingreso extra vendiendo lo que ya no utilizas. En MyWallapop
+			encontrarás el catálogo más amplio de anuncios clasificados y podrás
+			publicar anuncios gratis.</p>
+
+			<ul class="list-group row" >
+				<li class="list-group-item col-md-6">
+				  <a href="/registrarse" class="list-group-item">Registrate</a>
+			  	</li>
+				  <li class="list-group-item col-md-6">
+				  <a href="/identificarse" class="list-group-item">Inicia sesión</a>
+			  	</li>
+			</ul>
+
+	</div>
+{% endblock %}

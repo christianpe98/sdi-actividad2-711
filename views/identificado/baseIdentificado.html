@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "../base.html" %}
 
 {% block scripts_base %}
 {% block script_identificado %}{% endblock %}
@@ -16,15 +16,19 @@
 
     <li  id="profile-menu" class="dropdown"><a
             class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" href="#">
-        <img src="/img/student-48.png" class="rounded-circle z-depth-0" alt="avatar image" />
+        {{usuario.email}}
         <span class="caret"></span>
     </a>
         <ul class="dropdown-menu">
-            <li><a id="btn_profile" href="/user/profile" >Perfil<span class="glyphicon glyphicon-user"></span>
+            <li><a id="btn_profile" href="/perfil" >Perfil<span class="glyphicon glyphicon-user"></span>
             </a></li>
             <li>
-                <a id="btn_logout" href="/desconectar" >Desconectar
+                <a id="btn_logout" href="/desconectarse" >Desconectar
                     <span class="glyphicon glyphicon-log-out"></span>   </a>
+            </li>
+            <li class="divider"></li>
+            <li>
+                <p class="text-center"> <b>Saldo: {{usuario.cash}}€</b> </p>
             </li>
         </ul>
 </ul>

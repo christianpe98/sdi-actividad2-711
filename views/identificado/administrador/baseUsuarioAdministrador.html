@@ -1,0 +1,25 @@
+{% extends "../baseIdentificado.html" %}
+
+{% block script_identificado %}
+{% block script_usuarioAdministrador %}{% endblock %}
+{% endblock %}
+
+<!-- Encapsulamos el titulo_base -->
+{% block titulo_identificado %}
+{% block titulo_usuarioAdministrador %}{% endblock %}
+{% endblock %}
+
+{% block barra_nav_identificado %}
+<ul class="nav navbar-nav">
+    <li id="offers-menu" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Gestión de usuarios <span class="caret"></span> </a>
+        <ul class="dropdown-menu">
+            <li><a id="btn_addOffer" href="/usuarios">Listar usuarios </a></li>
+            <li><a id="btn_viewOffers" href="/eliminarUsuarios">Eliminar usuarios</a></li>
+        </ul>
+    </li>
+</ul>
+{% endblock %}
+
+{% block contenido_principal_identificado %}
+{% block contenido_principal_usuarioAdministrador %}{% endblock %}
+{% endblock %}
