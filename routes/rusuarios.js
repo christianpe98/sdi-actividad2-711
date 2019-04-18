@@ -6,11 +6,6 @@ module.exports=function(app,swig,usuariosBD){
 
     app.post("/registrarse",function(req,res){
         //Validaciones
-        if(req.body.email.toString().replace(" ","").length===0)
-        {
-            res.redirect("/registrarse?error=noEmail");
-            return;
-        }
         if(!req.body.name.toString().trim().length) //No lleva solo espacios
         {
             res.redirect("/registrarse?error=noNombre");
@@ -212,6 +207,5 @@ module.exports=function(app,swig,usuariosBD){
                 res.redirect("/eliminarUsuarios");
             }
         });
-
-    })
+    });
 }
