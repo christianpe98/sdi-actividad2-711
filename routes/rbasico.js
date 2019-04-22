@@ -28,6 +28,6 @@ module.exports=function(app,swig,usuariosBD){
     });
 
     app.get("/error",function(req,res){
-        res.send("HA OCURRIDO UN ERROR");
+        res.send("ERROR");
     })
 }

@@ -16,7 +16,7 @@ module.exports=function(app,utilBD){
                 res.send("NO SE HA PODIDO CONECTAR CON LA BASE DE DATOS");
             }else{
                 var usuarios=generarUsuarios();
-                /*var ofertas=generarOfertas();*/
+                /*var ofertas=generarOfertas(usuarios);*/
                 utilBD.insertarDatos(usuarios,/*ofertas,*/function(result)
                 {
                     if(result!=null)
@@ -39,15 +39,15 @@ module.exports=function(app,utilBD){
 
         return usuarios;
     }
-/*
-    function generarOfertas()
+
+    function generarOfertas(usuarios)
     {
         var ofertas=[];
         ofertas.push(crearUsuario("admin@email.com","Edward","Nuñez","admin","A",100));
         ofertas.push(crearUsuario("christian@email.com","Christian","Peláez","123456","U",100));
 
         return ofertas;
-    }*/
+    }
 
     function encriptarPassword(password) {
         return  app.get("crypto").createHmac('sha256', app.get('clave'))
@@ -64,4 +64,5 @@ module.exports=function(app,utilBD){
             cash:dinero,
         };
     };
-}
+
+};

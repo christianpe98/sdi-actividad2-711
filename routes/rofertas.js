@@ -90,28 +90,145 @@ module.exports=function(app,swig,ofertasBD,usuariosBD){
         var criterio={
             "_id":ofertasBD.mongo.ObjectID(req.params.id),
         };
-        ofertasBD.obtenerOfertas(criterio,function (oferta) {
-            if(oferta==null)
-            {
-                res.send("ERROR ELIMINAR OFERTAS 1");
+        ofertasBD.eliminarOferta(criterio,function(result)
+        {
+            if(result==null){
+                res.send("ERROR ELIMINAR OFERTAS 2");
             }else{
-                console.log(oferta[0].owner);
-                console.log(req.session.usuario);
-                if(oferta[0].owner!==req.session.usuario)
-                {
-                    res.send("NO PUEDE BORRAR UNA OFERTA SI NO ES EL PROPIETARIO");
-                }else{
-                    ofertasBD.eliminarOferta(criterio,function(result)
-                    {
-                        if(result==null){
-                            res.send("ERROR ELIMINAR OFERTAS 2");
-                        }else{
-                           res.redirect("/verOfertasPublicadas");
-                        }
-                    })
-                }
+               res.redirect("/verOfertasPublicadas");
             }
         })
+    });
+
+    app.get("/verOfertasCompradas",function(req,res){
+       var criterio={
+           purchaser:req.session.usuario
+       };
+
+        ofertasBD.obtenerOfertas(criterio,function(ofertas){
+            if(ofertas==null)
+            {
+                res.send("ERROR AL OBTENER OFERTAS COMPRADAS");
+            }else{
+                criterio={
+                    email:req.session.usuario
+                }
+                usuariosBD.obtenerUsuarios(criterio,function(usuario){
+                    if(usuario==null || usuario.length>1)
+                    {
+                        res.send("ERROR:OFERTAS COMPRADAS USUARIOS");
+                    }else{
+                        var usuario={email:usuario[0].email,cash:usuario[0].cash};
+                        var respuesta=swig.renderFile("views/identificado/estandar/bofertasCompradas.html",{ofertas:ofertas,usuario:usuario});
+                        res.send(respuesta);
+                    }
+                });
+            }
+        })
+
+    });
+
+    app.get("/buscarOfertas",function (req,res) {
+        var criterioBusqueda = {};
+        if (req.query.busqueda != null) {
+            // criterio = { "nombre" : new RegExp(req.query.busqueda,"i") };
+            criterioBusqueda = {"title": {$regex: "" + req.query.busqueda + ".*", $options: "i"}};
+        }
+        var pg = parseInt(req.query.pg); // Es String !!!
+        if (req.query.pg == null) { // Puede no venir el param
+            pg = 1;
+        }
+
+        ofertasBD.obtenerOfertasPg(criterioBusqueda, pg, function (ofertas, total) {
+            if (ofertas == null) {
+                res.send("Error al listar ");
+            } else {
+                var ultimaPg = total / 4;
+                if (total % 4 > 0) { // Sobran decimales
+                    ultimaPg = ultimaPg + 1;
+                }
+                var paginas = []; // paginas mostrar
+                for (var i = pg - 2; i <= pg + 2; i++) {
+                    if (i > 0 && i <= ultimaPg) {
+                        paginas.push(i);
+                    }
+                }
+                var criterioUsuario={
+                    email:req.session.usuario
+                };
+                usuariosBD.obtenerUsuarios(criterioUsuario,function(usuario)
+                {
+                    if(usuario==null){
+                        res.send("ERROR");
+                    }else{
+                        var respuesta = swig.renderFile('views/identificado/estandar/bbuscarOferta.html',
+                            {
+                                ofertas: ofertas,
+                                paginas: paginas,
+                                actual: pg,
+                                busqueda:req.query.busqueda,
+                                usuario:usuario[0]
+                            });
+                        res.send(respuesta);
+                    }
+                });
+
+            }
+        });
+    });
+
+    app.get("/comprarOferta/:id",function(req,res){
+        //Tenemos dinero? - SI o NO
+        var criterioOferta={
+            _id: ofertasBD.mongo.ObjectID(req.params.id)
+        }
+        ofertasBD.obtenerOfertas(criterioOferta,function(oferta){
+           if(oferta==null)
+           {
+               res.send("ERROR 12");
+           }else{
+               var criterioUsuario={
+                 email:req.session.usuario
+               };
+               usuariosBD.obtenerUsuarios(criterioUsuario,function(usuario)
+               {
+                   if(usuario==null)
+                   {
+                       res.send("ERROR 13");
+                   }else{
+                       if(oferta[0].price>usuario[0].cash){
+                           res.redirect("/buscarOfertas?error=No tienes dinero suficiente para comprar la oferta");
+                       }else{
+                           if(oferta[0].owner===usuario[0].email)
+                           {
+                               res.redirect("/buscarOfertas?error=No puedes comprar tu propia oferta")
+                           }else{
+                               //Compramos la oferta
+                               oferta[0].sold=true;
+                               oferta[0].purchaser=usuario[0].email;
+                               ofertasBD.modificarOferta(criterioOferta,oferta[0],function (ofertaModificada) {
+                                   if(ofertaModificada==null)
+                                   {
+                                       res.send("ERROR 14");
+                                   }else{
+                                       usuario[0].cash-=oferta[0].price;
+                                       usuariosBD.modificarUsuario(criterioUsuario,usuario[0],function (usuario) {
+                                           if(usuario==null)
+                                           {
+                                               res.send("ERROR 15");
+                                           }else{
+                                               res.redirect("/buscarOfertas");
+                                           }
+                                       });
+                                   }
+                               });
+                           }
+                       }
+                   }
+               });
+           }
+        });
+        // La compramos
     });
 
 };

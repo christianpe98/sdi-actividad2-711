@@ -13,6 +13,8 @@
 {% block barra_nav_base %}
 {% block barra_nav_identificado %}{% endblock %}
 <ul class="nav navbar-nav navbar-right">
+    <li><button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">Chat <span class="glyphicon glyphicon-comment"></span></button></li>
+
 
     <li  id="profile-menu" class="dropdown"><a
             class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" href="#">
@@ -31,9 +33,33 @@
                 <p class="text-center"> <b>Saldo: {{usuario.cash}}€</b> </p>
             </li>
         </ul>
+    </li>
 </ul>
+
 {% endblock %}
 
 {% block contenido_principal_base %}
+
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modal Header</h4>
+            </div>
+            <div class="modal-body">
+                <p>Some text in the modal.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
 {% block contenido_principal_identificado %}{% endblock %}
 {% endblock %}
