@@ -4,7 +4,7 @@ function createAlert(id,msg)
         var html="<div class='alert alert-danger alert-dismissible fade in'>\n" +
             "  <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>\n" +
             msg +"</div>";
-        $("#"+id).append(html);
+        $("#"+id).html(html);
     }
 };
 

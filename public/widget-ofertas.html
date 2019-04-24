@@ -1,0 +1,81 @@
+<div id="widget-ofertas" >
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th><Titulo</th>
+            <th>Detalles</th>
+            <th>Precio</th>
+            <th>Email vendedor</th>
+            <th class="col-md-1"></th>
+        </tr>
+        </thead>
+        <tbody id="tablaCuerpo">
+
+        </tbody>
+    </table>
+</div>
+
+<script>
+    window.history.pushState("", "", "/cliente.html?w=ofertas");
+
+    var ofertas;
+    function cargarOfertas(){
+        $.ajax({
+            url: URLbase + "/ofertas",
+            type: "GET",
+            data: { },
+            dataType: 'json',
+            headers: { "token": token },
+            success: function(respuesta) {
+                ofertas = respuesta;
+                actualizarTabla(ofertas);
+            },
+            error : function (error){
+                $( "#contenedor-principal" ).load("widget-login.html");
+            }
+        });
+    }
+    function actualizarTabla(ofertasMostrar){
+        $( "#tablaCuerpo" ).empty(); // Vaciar la tabla
+        for (i = 0; i < ofertasMostrar.length; i++) {
+            $( "#tablaCuerpo" ).append(
+                "<tr id="+ofertasMostrar[i]._id+">"+
+                "<td>"+ofertasMostrar[i].title+"</td>" +
+                "<td>"+ofertasMostrar[i].description+"</td>" +
+                "<td>"+ofertasMostrar[i].price+"</td>" +
+                "<td>"+ofertasMostrar[i].owner+"</td>" +
+                "<td>"+
+                "<a onclick=chatear('"+ofertasMostrar[i]._id+"')>Chat  <span class=\"glyphicon glyphicon-comment\"></span></a><br>"+
+                "</td>"+
+                "</tr>" );
+            // Mucho cuidado con las comillas del eliminarCancion
+            //la id tiene que ir entre comillas ' '
+        }
+    }
+
+    cargarOfertas();
+    function chatear(_id) {
+        idOfertaSeleccionada = _id;
+        $( "#contenedor-principal" ).load( "widget-chat.html");
+    }
+
+    function iniciarConversacion()
+    {
+        $.ajax({
+            url: URLbase + "/ofertas",
+            type: "GET",
+            data: { },
+            dataType: 'json',
+            headers: { "token": token },
+            success: function(respuesta) {
+                ofertas = respuesta;
+                actualizarTabla(ofertas);
+            },
+            error : function (error){
+                $( "#contenedor-principal" ).load("widget-login.html");
+            }
+        });
+    }
+
+</script>

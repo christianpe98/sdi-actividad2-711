@@ -1,0 +1,38 @@
+<div id="widget-chat">
+    <div id="mensajes"></div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="mensaje">Mensaje:</label>
+        <div class="col-sm-10">
+            <input type="email" class="form-control" name="email"
+                   placeholder="Hola!" id="mensaje" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="button" id="boton-enviar">Enviar</button>
+        </div>
+    </div>
+</div>
+<script>
+    $("#boton-enviar").click(function() {
+        $.ajax({
+            url: URLbase + "/mensaje",
+            type: "POST",
+            headers: {"token": token},
+            data: {
+                idOferta: idOfertaSeleccionada,
+                textoMensaje: $("#mensaje").val(),
+            },
+            dataType: 'json',
+            success: function (respuesta) {
+
+                $("#mensajes").append("<p>" + $("#mensaje").val() + "</p>");
+               // $("#mensaje").text("");
+            },
+            error: function (error) {
+                $("#mensajes").append("<p> ERROR </p>");
+            }
+        });
+    });
+
+</script>
