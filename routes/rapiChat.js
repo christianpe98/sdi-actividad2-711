@@ -35,7 +35,7 @@ module.exports = function (app, usuariosBD, ofertasBD, chatBD) {
                 res.status(500);
                 res.json({
                     error: "se ha producido un error"
-                })
+                });
             } else {
                 res.status(200);
                 res.send(JSON.stringify(ofertas));
@@ -43,75 +43,206 @@ module.exports = function (app, usuariosBD, ofertasBD, chatBD) {
         });
     });
 
-    function crearConversacion(usuario, idOferta) {
-        return {
-            usuario: usuario,
-            id_oferta: idOferta
-        }
-    }
 
 
-    ///REVISARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
-    app.post("/api/chat/mensaje", function (req, res) {
-        /*Datos del mensaje:
-        -origen -> email del usuario registrado
-        -oferta -> id de la oferta
-        -texto del mensaje
-        -fecha
-        -leido
-        -convesacion
-        */var criterio = {
-            usuario: res.usuario,
-            id_oferta: req.body.idOferta
+    app.get("/api/chat/conversaciones",function (req,res) {
+        console.log(res.usuario);
+        var criterio={
+            miembros:{"$in":[res.usuario]}
         };
-        chatBD.obtenerConversacion(criterio, function (conversaciones) {
-            if (conversaciones == null) {
+        chatBD.obtenerConversacion(criterio,function(conversaciones){
+           if(conversaciones===null){
+               res.status(500);
+               res.json({
+                   error: "se ha producido un error"
+               });
+           }else{
+                   var result=[];
+                   var i;
+
+                    for(i=0;i<conversaciones.length;i++) {
+                        var usuario = conversaciones[i].miembros[0];
+                        if (res.usuario === conversaciones[i].miembros[0]) {
+                            usuario = conversaciones[i].miembros[1];
+                        }
+                        var numeroMensajesSinLeer=conversaciones[i].mensajes.reduce(function(acumulado,mensaje){ if(!mensaje.leido && mensaje.origen!=res.usuario){ return acumulado++} });
+                        console.log(numeroMensajesSinLeer);
+                        result.push({
+                            tituloOferta:conversaciones[i].oferta.title,
+                            idOferta:conversaciones[i].oferta._id.toString(),
+                            usuario:usuario,
+                            _id:conversaciones[i]._id,
+                            numeroMensajesSinLeer:numeroMensajesSinLeer
+                        })
+                    }
+               res.status(200);
+               res.send(JSON.stringify(result));
+           }
+        });
+    });
+
+    app.put("/api/chat/mensajes",function(req,res){
+        var criterio= {
+            "oferta._id": ofertasBD.mongo.ObjectID(req.body.idOferta),
+            miembros: {$all: [res.usuario, req.body.destino]},
+            mensajes:{}
+        };
+        chatBD.obtenerConversacion(criterio,function(conversacion){
+            if(conversacion===null)
+            {
                 res.status(500);
                 res.json({
-                    enviado: false
+                    error: "se ha producido un error"
                 });
-            } else {
-                if (conversaciones.length === 0) {
-                    var conversacion = crearConversacion(res.usuario, req.body.idOferta);
-                    chatBD.insertarConversacion(conversacion, function (result) {
-                        if (result == null) {
-                            res.status(500);
-                            res.json({
-                                enviado: false
-                            });
-                        } else {
-                            var mensaje = crearMensaje(res.usuario, req.body.idOferta, req.body.textoMensaje, new Date(), false, result.toString());//CAMBIARRRRRRR ID CONVERSACION
-                            chatBD.insertarMensaje(mensaje, function (result) {
-                                if (result == null) {
-                                    res.status(500);
-                                    res.json({
-                                        enviado: false
-                                    });
-                                } else {
-                                    res.status(200);
-                                    res.json({
-                                        enviado: true,
-                                    });
-                                }
-                            });
-                        }
-
+            }else{
+                if(conversacion[0]==null){
+                    res.status(500);
+                    res.json({
+                        error: "se ha producido un error"
                     });
+                }else{
+
+
                 }
+
             }
         });
+    });
+
+    app.get("/api/chat/mensajes",function(req,res){
+        var criterio= {
+            "oferta._id": ofertasBD.mongo.ObjectID(req.query.idOferta),
+            miembros: {$all: [res.usuario, req.query.destino]}
+        };
+        chatBD.obtenerConversacion(criterio,function(conversacion){
+            if(conversacion===null)
+            {
+                res.status(500);
+                res.json({
+                    error: "se ha producido un error"
+                });
+            }else{
+                if(conversacion[0]==null){
+                    res.status(204 );
+                    res.json({
+                        error: "se ha producido un error"
+                    });
+                }else{
+                    res.status(200);
+                    console.log(conversacion[0]);
+                    res.send(JSON.stringify(conversacion[0].mensajes));
+                }
+
+            }
+        });
+    });
+
+    app.get("/api/chat/numeroMensajes",function(req,res){
 
     });
 
-    function crearMensaje(origen, oferta, texto, fecha, leido, conversacion) {
+    ///REVISARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
+    app.post("/api/chat/mensaje", function (req, res) {
+        var criterio= {
+            "oferta._id": ofertasBD.mongo.ObjectID(req.body.idOferta),
+            miembros: {$all: [res.usuario, req.body.destino]}
+        };
+
+         chatBD.obtenerConversacion(criterio,function(conversacion){
+             if(conversacion===null)
+             {
+                 res.status(500);
+                 res.json({
+                     error: "se ha producido un error"
+                 });
+             }else{
+                 var mensaje=crearMensaje(res.usuario,req.body.idOferta,req.body.textoMensaje,new Date(),false);
+                 if(conversacion.length===0){
+                     ofertasBD.obtenerOfertas({_id:ofertasBD.mongo.ObjectID(req.body.idOferta)},function(oferta) {
+                         if (oferta === null) {
+                             res.status(500);
+                             res.json({
+                                 error: "se ha producido un error"
+                             });
+                         } else {
+                         var conversacion = crearConversacion(res.usuario, req.body.destino, oferta[0]);
+                         chatBD.crearConversacion(conversacion, function (result) {
+                             if (result === null) {
+                                 res.status(500);
+                                 res.json({
+                                     error: "se ha producido un error"
+                                 });
+                             } else {
+
+                                 chatBD.insertarMensaje({_id: usuariosBD.mongo.ObjectID(result)}, mensaje, function (resultado) {
+                                     res.status(200);
+                                     res.send(JSON.stringify(mensaje));
+                                 });
+                             }
+                         });
+                     }
+                     });
+                 }else{
+                    chatBD.insertarMensaje({_id:usuariosBD.mongo.ObjectID(conversacion[0]._id)},mensaje,function(resultado){
+                            res.status(200);
+                            res.send(JSON.stringify(mensaje));
+                     });
+                 }
+             }
+         });
+
+    });
+
+
+    app.delete("/api/chat/conversacion",function(req,res) {
+        var criterio = {
+            _id: chatBD.mongo.ObjectID(req.body.idConversacion)
+        };
+        chatBD.obtenerConversacion(criterio, function (conversacion) {
+            if (conversacion === null) {
+                res.status(500);
+                res.json({
+                    error: "ERROR"
+                });
+            } else {
+              //AÑADIR COMPROBACION
+                    chatBD.eliminarConverscion(criterio, function (result) {
+                        if (result === null) {
+                            res.status(500);
+                            res.json({
+                                error: "ERROR"
+                            });
+                        } else {
+                            res.status(200);
+                            res.json({
+                                ok: "OK"
+                            });
+                        }
+                    });
+
+            }
+        });
+    });
+
+
+    function crearConversacion(usuario1,usuario2, oferta) {
+        return {
+            miembros:[usuario1,usuario2],
+            oferta: oferta,
+            mensajes:[]
+        }
+    }
+
+    function crearMensaje(origen, oferta, texto, fecha, leido) {
         return {
             origen: origen,
             id_oferta: oferta,
             texto: texto,
             fecha: fecha,
             leido: leido,
-            id_conversacion: conversacion
         };
     };
+
+
 
 };

@@ -1,5 +1,17 @@
 <div id="widget-chat">
-    <div id="mensajes"></div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Origen</th>
+            <th>Mensaje</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+        </tr>
+        </thead>
+        <tbody id="tablaCuerpo">
+
+        </tbody>
+    </table>
     <div class="form-group">
         <label class="control-label col-sm-2" for="mensaje">Mensaje:</label>
         <div class="col-sm-10">
@@ -14,6 +26,29 @@
     </div>
 </div>
 <script>
+
+    function cargarConversacion() {
+        $.ajax({
+            url: URLbase + "/mensajes",
+            type: "GET",
+            headers: {"token": token},
+            data: {
+                idOferta: idOfertaSeleccionada,
+                destino: usuarioDestino
+            },
+            dataType: 'json',
+            success: function (mensaje) {
+                mostratMuchosMensajes(mensaje);
+            },
+            error: function (error) {
+                errorMensaje(error);
+            }
+        });
+    }
+
+
+    setInterval(cargarConversacion,2000);
+
     $("#boton-enviar").click(function() {
         $.ajax({
             url: URLbase + "/mensaje",
@@ -22,17 +57,51 @@
             data: {
                 idOferta: idOfertaSeleccionada,
                 textoMensaje: $("#mensaje").val(),
+                destino:usuarioDestino
             },
             dataType: 'json',
-            success: function (respuesta) {
-
-                $("#mensajes").append("<p>" + $("#mensaje").val() + "</p>");
-               // $("#mensaje").text("");
+            success: function (mensaje) {
+                mostrarMensajes(mensaje);
             },
             error: function (error) {
-                $("#mensajes").append("<p> ERROR </p>");
+                errorMensaje(error);
             }
         });
     });
+
+    function errorMensaje(error){
+        $( "#tablaCuerpo" ).append(
+            "<tr id="+mensaje._id+">"+
+            "<td>"+"</td>" +
+            "<td>"+"ERROR AL ENVIAR EL MENSAJE"+"</td>" +
+            "<td>"+"</td>" +
+            "<tr>"
+        );
+    };
+
+    function mostratMuchosMensajes(arrayMensajes){
+        $( "#tablaCuerpo" ).empty();
+        for(i=0;i<arrayMensajes.length;i++)
+        {
+            $( "#tablaCuerpo" ).append(
+                "<tr id="+arrayMensajes[i]._id+">"+
+                "<td>"+arrayMensajes[i].origen+"</td>" +
+                "<td>"+arrayMensajes[i].texto+"</td>" +
+                "<td>"+moment(arrayMensajes[i].fecha).format('MMMM Do YYYY, h:mm:ss a')+"</td>" +
+                "<tr>"
+            );
+        }
+    }
+
+    function mostrarMensajes(mensaje){
+        //for
+        $( "#tablaCuerpo" ).append(
+            "<tr id="+mensaje._id+">"+
+                "<td>"+mensaje.origen+"</td>" +
+                "<td>"+mensaje.texto+"</td>" +
+                "<td>"+moment(mensaje.fecha).format('MMMM Do YYYY, h:mm:ss a')+"</td>" +
+            "<tr>"
+        );
+    }
 
 </script>

@@ -36,19 +36,43 @@ module.exports=function(app,utilBD){
         var usuarios=[];
         usuarios.push(crearUsuario("admin@email.com","Edward","Nuñez","admin","A",100));
         usuarios.push(crearUsuario("christian@email.com","Christian","Peláez","123456","U",100));
-
+        usuarios.push(crearUsuario("cristina@email.com","Cristina","Ruiz de Bucesta","123456","U",100));
+        usuarios.push(crearUsuario("noe@email.com","Noe","Fernandez","123456","U",100));
+        usuarios.push(crearUsuario("william@email.com","William","Bones","123456","U",100));
         return usuarios;
     }
 
-    function generarOfertas(usuarios)
+    function generarOfertas()
     {
         var ofertas=[];
-        ofertas.push(crearUsuario("admin@email.com","Edward","Nuñez","admin","A",100));
-        ofertas.push(crearUsuario("christian@email.com","Christian","Peláez","123456","U",100));
-
+        ofertas.push(crearOferta("Televisión Samsung","Televisión de 40 pulgadas 4K",new Date(1998,11,11),500,"christian@email.com",false,null));
+        ofertas.push(crearOferta("BMX","Bicicleta último modelo",new Date(2018,4,27),"200","gema@email.com",true,"noe@email.com"));
+        ofertas.push(crearOferta("PS4 Pro","Consola",new Date(2017,4,27),"150","cristina@email.com",false,"christian@email.com"));
         return ofertas;
     }
 
+
+    function crearMensaje(origen, oferta, texto, fecha, leido) {
+        return {
+            origen: origen,
+            id_oferta: oferta,
+            texto: texto,
+            fecha: fecha,
+            leido: leido,
+        };
+    };
+
+    function crearOferta(titulo,descripcion,fecha,precio,propietario,vendida,comprador){
+        return {
+            title: titulo,
+            description:descripcion,
+            date:fecha,
+            price:precio,
+            owner:propietario,
+            sold:vendida,
+            purchaser:comprador
+        }
+    };
     function encriptarPassword(password) {
         return  app.get("crypto").createHmac('sha256', app.get('clave'))
             .update(password).digest('hex');

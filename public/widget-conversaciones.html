@@ -1,0 +1,86 @@
+<div id="widget-conversaciones" >
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Usuario</th>
+            <th>Oferta</th>
+            <th>Mensajes sin leer</th>
+            <th class="col-md-1"></th>
+            <th class="col-md-1"></th>
+        </tr>
+        </thead>
+        <tbody id="tablaCuerpo">
+
+        </tbody>
+    </table>
+</div>
+<script>
+    var conversaciones;
+    function cargarConversaciones(){
+        $.ajax({
+            url: URLbase + "/conversaciones",
+            type: "GET",
+            data:{},
+            dataType: 'json',
+            headers: { "token": token },
+            success: function(respuesta) {
+                conversaciones = respuesta;
+                actualizarTabla(conversaciones);
+            },
+            error : function (error){
+                console.log("ERROR");
+                $( "#contenedor-principal" ).load("widget-login.html");
+            }
+        });
+    }
+    function actualizarTabla(converacionesMostrar){
+        console.log(converacionesMostrar);
+        $( "#tablaCuerpo" ).empty(); // Vaciar la tabla
+        for (i = 0; i < converacionesMostrar.length; i++) {
+            $( "#tablaCuerpo" ).append(
+                "<tr id="+converacionesMostrar[i]._id.toString()+">"+
+                "<td>"+converacionesMostrar[i].usuario+"</td>"+
+                "<td>"+converacionesMostrar[i].tituloOferta+"</td>"+
+                "<td>"+converacionesMostrar[i].numeroMensajesSinLeer+"</td>"+
+                "<td>"+
+                "<a onclick=eliminar('"+converacionesMostrar[i]._id.toString()+"')>Eliminar  <span class=\"glyphicon glyphicon-comment\"></span></a><br>"+
+                "</td>"+
+                "<td>"+
+                "<a onclick=chatear('"+converacionesMostrar[i].idOferta+"','"+converacionesMostrar[i].usuario+"')>Chat  <span class=\"glyphicon glyphicon-comment\"></span></a><br>"+
+                "</td>"+
+                "</tr>" );
+            // Mucho cuidado con las comillas del eliminarCancion
+            //la id tiene que ir entre comillas ' '
+        }
+    }
+
+    cargarConversaciones();
+
+    function eliminar(idConversacion){
+        $.ajax({
+            url: URLbase + "/conversacion",
+            type: "DELETE",
+            data: {
+                idConversacion:idConversacion
+            },
+            dataType: 'json',
+            success: function(respuesta) {
+                cargarConversaciones();
+            },
+            error : function (error){
+                Cookies.remove('token');
+                createAlert("alert","Usuario no encontrado");
+            }
+        });
+    };
+
+    function chatear(idOferta,destino){
+        idOfertaSeleccionada=idOferta;
+        console.log(idOfertaSeleccionada);
+        console.log("destino"+destino);
+        usuarioDestino=destino;
+        console.log("ANTES DE CHAT"+usuarioDestino);
+        $( "#contenedor-principal" ).load("widget-chat.html");
+    };
+</script>

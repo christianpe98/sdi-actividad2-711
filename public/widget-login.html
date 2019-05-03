@@ -35,10 +35,8 @@
             },
             dataType: 'json',
             success: function(respuesta) {
-                console.log(respuesta.token); // <- Prueba
                 token = respuesta.token;
                 Cookies.set('token', respuesta.token);
-                console.log(token);
                 $( "#contenedor-principal" ).load( "widget-ofertas.html");
             },
             error : function (error){

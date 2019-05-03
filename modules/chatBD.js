@@ -6,17 +6,17 @@ module.exports= {
         this.app = app;
     },
 
-    insertarConversacion: function(conversacion, funcionCallback) {
+    obtenerConversacion:function (criterio, funcionCallback) {
         this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
             if (err) {
                 funcionCallback(null);
             } else {
                 var collection = db.collection('conversaciones');
-                collection.insert(conversacion, function(err, result) {
+                collection.find(criterio).toArray(function(err, conversacion) {
                     if (err) {
                         funcionCallback(null);
                     } else {
-                        funcionCallback(result.ops[0]._id);
+                        funcionCallback(conversacion);
                     }
                     db.close();
                 });
@@ -24,17 +24,17 @@ module.exports= {
         });
     },
 
-    obtenerConversacion: function(criterio,funcionCallback){
-        this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
+    insertarMensaje: function (criterio,mensaje, functionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
             if (err) {
-                funcionCallback(null);
+                functionCallback(null);
             } else {
                 var collection = db.collection('conversaciones');
-                collection.find(criterio).toArray(function(err, conversaciones) {
+                collection.updateOne(criterio,{$push:{mensajes:mensaje}},function (err, conversacion) {
                     if (err) {
-                        funcionCallback(null);
+                        functionCallback(null);
                     } else {
-                        funcionCallback(conversaciones);
+                        functionCallback(conversacion);
                     }
                     db.close();
                 });
@@ -42,17 +42,53 @@ module.exports= {
         });
     },
 
-    insertarMensaje: function (mensaje,functionCallback) {
-        this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
+    crearConversacion:function(conversacion,functionCallback){
+        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
             if (err) {
                 funcionCallback(null);
             } else {
-                var collection = db.collection('mensajes');
-                collection.insert(mensaje, function(err, result) {
+                var collection = db.collection('conversaciones');
+                collection.insert(conversacion, function (err, result) {
                     if (err) {
                         functionCallback(null);
                     } else {
                         functionCallback(result.ops[0]._id);
+                    }
+                    db.close();
+                });
+            }
+        });
+    },
+
+    eliminarConverscion:function(criterio,funcionCallback){
+        this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
+            if (err) {
+                funcionCallback(null);
+            } else {
+                var collection = db.collection('conversaciones');
+                collection.remove(criterio, function(err, result) {
+                    if (err) {
+                        funcionCallback(null);
+                    } else {
+                        funcionCallback(result);
+                    }
+                    db.close();
+                });
+            }
+        });
+    },
+
+    modificarMensaje: function(criterio,mensaje, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
+            if (err) {
+                funcionCallback(null);
+            } else {
+                var collection = db.collection('conversaciones');
+                collection.update(criterio, {$set: mensaje}, function (err, result) {
+                    if (err) {
+                        funcionCallback(null);
+                    } else {
+                        funcionCallback(result);
                     }
                     db.close();
                 });
