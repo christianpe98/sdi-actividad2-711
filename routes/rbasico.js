@@ -9,7 +9,7 @@ module.exports=function(app,swig,usuariosBD){
             var criterio={email:req.session.usuario};
             usuariosBD.obtenerUsuarios(criterio,function(usuarios) {
                 if (usuarios.length === 0 || usuarios.length > 1) {
-                    res.send("ERROR"); //<-------------------------------------- CAMBIAR
+                    res.rendirect("/error?error=Ha ocurrido un error inesperado");
                 } else {
                     if (usuarios[0].rol === 'U') {
                         var respuesta = swig.renderFile('views/identificado/estandar/bindexEstandar.html', {usuario: usuarios[0]});
@@ -26,8 +26,4 @@ module.exports=function(app,swig,usuariosBD){
 
         }
     });
-
-    app.get("/error",function(req,res){
-        res.send("ERROR");
-    })
 }

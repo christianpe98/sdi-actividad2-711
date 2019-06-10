@@ -20,11 +20,11 @@
 				<tbody>
 				{% for oferta in ofertas %}
 					<tr>
-						<td class="text-center">{{oferta.title}}</td>
+						<td class="text-center" name="title_value">{{oferta.title}}</td>
 						<td class="text-center">{{oferta.description}}</td>
 						<td class="text-center">{{oferta.price}}</td>
 						<td class="text-center">
-							<a href="/eliminarOferta/{{oferta._id.toString()}}">ELIMINAR</a>
+							<a name="remove_link" href="/eliminarOferta/{{oferta._id.toString()}}">ELIMINAR</a>
 						</td>
 					</tr>
 				{% endfor %}

@@ -1,0 +1,16 @@
+{% extends "baseUsuarioAdministrador.html" %}
+
+{% block script_usuarioAdministrador %}
+<script src="./js/urlParameter.js"></script> <!-- Para poder mostrar las alertas -->
+{% endblock %}
+
+{% block titulo_usuarioAdministrador %}ERROR{% endblock %}
+
+{% block contenido_principal_usuarioAdministrador %}
+<h2 >ERROR</h2>
+<h3 id="error"></h3>
+
+<script>
+    $("#error").html("<h3>"+getUrlParameter('error')+"</h3>");
+</script>
+{% endblock %}

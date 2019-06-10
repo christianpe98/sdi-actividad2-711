@@ -14,10 +14,10 @@
 			<div id="custom-search-input ">
 				<form method="get" action="/buscarOfertas" >
 					<div class="input-group ">
-						<input type="text" class="search-query form-control"
+						<input id="search_input" type="text" class="search-query form-control"
 							   placeholder="Nombre de la canción" name="busqueda"/>
 						<span class="input-group-btn">
-<button class="btn" type="submit">
+<button id="btn_search" class="btn" type="submit">
 <span class="glyphicon glyphicon-search"></span>
 </button>
 </span>
@@ -40,7 +40,7 @@
 				<tbody>
 				{% for oferta in ofertas %}
 					<tr>
-						<td>{{oferta.title}}</td>
+						<td name="title_value">{{oferta.title}}</td>
 						<td>{{oferta.description}}</td>
 						<td>{{oferta.price}}</td>
 						{% if oferta.sold %}
@@ -61,7 +61,7 @@
 	<ul class="pagination">
 		{% for pagina in paginas %}
 		<li class="page-item" id="pi-{{ pagina}}">
-			<a class="page-link" href="/buscarOfertas?pg={{ pagina }}&busqueda={{busqueda}}" >{{ pagina }}</a>
+			<a id="link-{{ pagina}}" class="page-link" href="/buscarOfertas?pg={{ pagina }}&busqueda={{busqueda}}" >{{ pagina }}</a>
 		</li>
 		{% endfor %}
 		<script>
