@@ -46,7 +46,7 @@
 						{% if oferta.sold %}
 							<td>VENDIDA</td>
 						{% else %}
-						<td><a href="/comprarOferta/{{oferta._id.toString()}}">COMPRAR</a></td>
+						<td><a name="btn_nopurchased" href="/comprarOferta/{{oferta._id.toString()}}">COMPRAR</a></td>
 						{% endif %}
 					</tr>
 				</tbody>

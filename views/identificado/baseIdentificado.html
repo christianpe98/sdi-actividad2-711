@@ -13,46 +13,13 @@
 {% block barra_nav_base %}
 {% block barra_nav_identificado %}{% endblock %}
 <ul class="nav navbar-nav navbar-right">
-    <li><button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">Chat <span class="glyphicon glyphicon-comment"></span></button></li>
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
-         aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <button type="button" class="close"
-                            data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                        <span class="sr-only">Close</span>
-                    </button>
-                    <h4 class="modal-title" id="myModalLabel">
-                        Inia sesión en el Chat
-                    </h4>
-                </div>
+    <li><button id="botonChat" type="button" class="btn btn-info">Chat <span class="glyphicon glyphicon-comment"></span></button></li>
 
-                <!-- Modal Body -->
-                <div class="modal-body">
-                    <p>¿Tienes alguna duda respecto a una oferta? ¡Entra y preguntale directamente!</p>
-                    <form role="form">
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Email</label>
-                            <input type="email" class="form-control"
-                                   id="exampleInputEmail1" placeholder="christian@email.com"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Password</label>
-                            <input type="password" class="form-control"
-                                   id="exampleInputPassword1" placeholder="Password"/>
-                        </div>
-                        <button type="submit" class="btn btn-default">Iniciar Sesión</button>
-                    </form>
-
-
-                </div>
-
-            </div>
-        </div>
-    </div>
+    <script>
+        $("#botonChat").click(function () {
+            window.open( "https://localhost:7081/cliente.html", null, null );
+        });
+    </script>
 
     <li  id="profile-menu" class="dropdown"><a
             class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" href="#">
@@ -68,7 +35,7 @@
             </li>
             <li class="divider"></li>
             <li>
-                <p class="text-center"> <b>Saldo: {{usuario.cash}}€</b> </p>
+                <p class="text-center"> Saldo: <b id="saldo">{{usuario.cash}}€</b> </p>
             </li>
         </ul>
     </li>

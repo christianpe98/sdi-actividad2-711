@@ -26,7 +26,9 @@
     </div>
 </div>
 <script>
+    stopIntervals(intervalConversaciones,intervalChat);
 
+    window.history.pushState("", "", "/cliente.html?w=chatear");
     function cargarConversacion() {
         $.ajax({
             url: URLbase + "/mensajes",
@@ -45,9 +47,12 @@
             }
         });
     }
+    cargarConversacion();
+    var url = new URL(window.location.href);
+    var w = url.searchParams.get("w");
 
+    intervalChat=setInterval(cargarConversacion, 2000);
 
-    setInterval(cargarConversacion,2000);
 
     $("#boton-enviar").click(function() {
         $.ajax({
@@ -61,7 +66,7 @@
             },
             dataType: 'json',
             success: function (mensaje) {
-                mostrarMensajes(mensaje);
+                $("#mensaje").val("");
             },
             error: function (error) {
                 errorMensaje(error);
@@ -91,17 +96,6 @@
                 "<tr>"
             );
         }
-    }
-
-    function mostrarMensajes(mensaje){
-        //for
-        $( "#tablaCuerpo" ).append(
-            "<tr id="+mensaje._id+">"+
-                "<td>"+mensaje.origen+"</td>" +
-                "<td>"+mensaje.texto+"</td>" +
-                "<td>"+moment(mensaje.fecha).format('MMMM Do YYYY, h:mm:ss a')+"</td>" +
-            "<tr>"
-        );
     }
 
 </script>

@@ -5,7 +5,6 @@
         <tr>
             <th>Usuario</th>
             <th>Oferta</th>
-            <th>Mensajes sin leer</th>
             <th class="col-md-1"></th>
             <th class="col-md-1"></th>
         </tr>
@@ -16,6 +15,9 @@
     </table>
 </div>
 <script>
+    stopIntervals(intervalConversaciones,intervalChat);
+    window.history.pushState("", "", "/cliente.html?w=conversaciones");
+    $( "#myNavbar" ).load("widget-navbar.html");
     var conversaciones;
     function cargarConversaciones(){
         $.ajax({
@@ -42,7 +44,6 @@
                 "<tr id="+converacionesMostrar[i]._id.toString()+">"+
                 "<td>"+converacionesMostrar[i].usuario+"</td>"+
                 "<td>"+converacionesMostrar[i].tituloOferta+"</td>"+
-                "<td>"+converacionesMostrar[i].numeroMensajesSinLeer+"</td>"+
                 "<td>"+
                 "<a onclick=eliminar('"+converacionesMostrar[i]._id.toString()+"')>Eliminar  <span class=\"glyphicon glyphicon-comment\"></span></a><br>"+
                 "</td>"+
@@ -50,12 +51,14 @@
                 "<a onclick=chatear('"+converacionesMostrar[i].idOferta+"','"+converacionesMostrar[i].usuario+"')>Chat  <span class=\"glyphicon glyphicon-comment\"></span></a><br>"+
                 "</td>"+
                 "</tr>" );
-            // Mucho cuidado con las comillas del eliminarCancion
-            //la id tiene que ir entre comillas ' '
+
         }
     }
-
     cargarConversaciones();
+    var url = new URL(window.location.href);
+    var w = url.searchParams.get("w");
+    intervalConversaciones=setInterval(cargarConversaciones, 2000);
+
 
     function eliminar(idConversacion){
         $.ajax({

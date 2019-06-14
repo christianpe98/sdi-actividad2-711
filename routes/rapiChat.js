@@ -81,34 +81,6 @@ module.exports = function (app, usuariosBD, ofertasBD, chatBD) {
         });
     });
 
-    app.put("/api/chat/mensajes",function(req,res){
-        var criterio= {
-            "oferta._id": ofertasBD.mongo.ObjectID(req.body.idOferta),
-            miembros: {$all: [res.usuario, req.body.destino]},
-            mensajes:{}
-        };
-        chatBD.obtenerConversacion(criterio,function(conversacion){
-            if(conversacion===null)
-            {
-                res.status(500);
-                res.json({
-                    error: "se ha producido un error"
-                });
-            }else{
-                if(conversacion[0]==null){
-                    res.status(500);
-                    res.json({
-                        error: "se ha producido un error"
-                    });
-                }else{
-
-
-                }
-
-            }
-        });
-    });
-
     app.get("/api/chat/mensajes",function(req,res){
         var criterio= {
             "oferta._id": ofertasBD.mongo.ObjectID(req.query.idOferta),
@@ -136,10 +108,10 @@ module.exports = function (app, usuariosBD, ofertasBD, chatBD) {
             }
         });
     });
-
-    app.get("/api/chat/numeroMensajes",function(req,res){
-
-    });
+    
+    app.post("/api/chat/desconectar",function (req,res) {
+        
+    })
 
     ///REVISARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
     app.post("/api/chat/mensaje", function (req, res) {
