@@ -17,6 +17,7 @@ module.exports = function (app, usuariosBD, ofertasBD, chatBD) {
                 var token = app.get('jwt').sign(
                     {usuario: criterio.email, tiempo: Date.now() / 1000},
                     "secreto");
+                app.get("log").info("EL usuario"+req.body.email+" ha iniciado sesión en el chat");
                 res.status(200);
                 res.json({
                     autenticado: true,
@@ -103,12 +104,9 @@ module.exports = function (app, usuariosBD, ofertasBD, chatBD) {
             }
         });
     });
-    
-    app.post("/api/chat/desconectar",function (req,res) {
-        
-    })
 
-    ///REVISARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
+
+
     app.post("/api/chat/mensaje", function (req, res) {
         var criterio= {
             "oferta._id": ofertasBD.mongo.ObjectID(req.body.idOferta),

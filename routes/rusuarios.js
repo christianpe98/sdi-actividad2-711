@@ -223,6 +223,7 @@ module.exports=function(app,swig,usuariosBD){
             {
                 res.send("ERROR AL ELIMINAR USUARIOS");
             }else{
+                app.get("log").info("Se ha eliminado el usuario:"+req.body.checkEmail);
                 res.redirect("/eliminarUsuarios");
             }
         });

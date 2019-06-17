@@ -43,6 +43,7 @@ module.exports=function(app,swig,ofertasBD,usuariosBD){
             {
                 res.send("ERROR: NO SE HA PODIDO AGREGAR LA OFERTA");
             }else{
+                app.get("log").info("Se ha agregado la oferta: "+oferta.title);
                 res.redirect("/verOfertasPublicadas");
             }
         })
@@ -95,6 +96,7 @@ module.exports=function(app,swig,ofertasBD,usuariosBD){
             if(result==null){
                 res.send("ERROR ELIMINAR OFERTAS 2");
             }else{
+                app.get("log").info("Se ha eliminado la oferta con id:"+ofertasBD.mongo.ObjectID(req.params.id));
                res.redirect("/verOfertasPublicadas");
             }
         })
@@ -217,6 +219,7 @@ module.exports=function(app,swig,ofertasBD,usuariosBD){
                                            {
                                                res.send("ERROR 15");
                                            }else{
+                                               app.get("log").info("Se ha compadro la oferta con id:"+ofertasBD.mongo.ObjectID(req.params.id));
                                                res.redirect("/buscarOfertas");
                                            }
                                        });
@@ -228,7 +231,7 @@ module.exports=function(app,swig,ofertasBD,usuariosBD){
                });
            }
         });
-        // La compramos
+
     });
 
 };
