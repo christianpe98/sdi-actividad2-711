@@ -1,7 +1,7 @@
 function createAlert(id,msg)
 {
     if (msg != '') {
-        var html="<div class='alert alert-danger alert-dismissible fade in'>\n" +
+        var html="<div id=\"alerta\" class='alert alert-danger alert-dismissible fade in'>\n" +
             "  <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>\n" +
             msg +"</div>";
         $("#"+id).html(html);

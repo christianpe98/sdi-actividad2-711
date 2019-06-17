@@ -20,14 +20,15 @@
 
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <button id="btn_login" type="submit" class="btn btn-primary">Identificar</button>
+            <button id="btn_login_submit" type="submit" class="btn btn-primary">Identificar</button>
         </div>
     </div>
 
 <script>
+    stopIntervals(intervalConversaciones,intervalChat);
     window.history.pushState("", "", "/cliente.html?w=login");
 
-    $("#btn_login").click(function(){
+    $("#btn_login_submit").click(function(){
         $.ajax({
             url: URLbase + "/identificarse",
             type: "POST",

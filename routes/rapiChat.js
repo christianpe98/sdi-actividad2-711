@@ -46,7 +46,6 @@ module.exports = function (app, usuariosBD, ofertasBD, chatBD) {
 
 
     app.get("/api/chat/conversaciones",function (req,res) {
-        console.log(res.usuario);
         var criterio={
             miembros:{"$in":[res.usuario]}
         };
@@ -65,14 +64,11 @@ module.exports = function (app, usuariosBD, ofertasBD, chatBD) {
                         if (res.usuario === conversaciones[i].miembros[0]) {
                             usuario = conversaciones[i].miembros[1];
                         }
-                        var numeroMensajesSinLeer=conversaciones[i].mensajes.reduce(function(acumulado,mensaje){ if(!mensaje.leido && mensaje.origen!=res.usuario){ return acumulado++} });
-                        console.log(numeroMensajesSinLeer);
                         result.push({
                             tituloOferta:conversaciones[i].oferta.title,
                             idOferta:conversaciones[i].oferta._id.toString(),
                             usuario:usuario,
-                            _id:conversaciones[i]._id,
-                            numeroMensajesSinLeer:numeroMensajesSinLeer
+                            _id:conversaciones[i]._id
                         })
                     }
                res.status(200);
@@ -101,7 +97,6 @@ module.exports = function (app, usuariosBD, ofertasBD, chatBD) {
                     });
                 }else{
                     res.status(200);
-                    console.log(conversacion[0]);
                     res.send(JSON.stringify(conversacion[0].mensajes));
                 }
 

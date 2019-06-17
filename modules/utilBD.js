@@ -3,18 +3,20 @@ module.exports={
     app : null,
     usuariosBD:null,
     ofertasBD:null,
-    init : function(app, mongo,usuariosBD,ofertasBD) {
+    chatBD:null,
+    init : function(app, mongo,usuariosBD,ofertasBD,chatBD) {
         this.mongo = mongo;
         this.app = app;
         this.usuariosBD=usuariosBD;
         this.ofertasBD=ofertasBD;
+        this.chatBD=chatBD;
     },
 
     eliminarColecciones: function(functionCallback)
     {
         this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
             if (err) {
-                funcionCallback(null);
+                functionCallback(null);
             }else{
                   db.dropDatabase();
                   functionCallback(true);
@@ -22,10 +24,11 @@ module.exports={
         });
     },
 
-    insertarDatos: function(usuarios,ofertas,functionCallback)
+    insertarDatos: function(usuarios,ofertas,conversaciones,functionCallback)
     {
         var usuariosBD=this.usuariosBD;
         var ofertasBD=this.ofertasBD;
+        var chatBD=this.chatBD;
         this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
             if (err) {
                 funcionCallback(null);
@@ -35,7 +38,14 @@ module.exports={
                     {
                         functionCallback(null);
                     }else{
-                        ofertasBD.agregarOferta(ofertas,functionCallback);
+                        ofertasBD.agregarOferta(ofertas,function(result){
+                            if(result==null)
+                            {
+                                functionCallback(null);
+                            }else {
+                                chatBD.crearConversacion(conversaciones,functionCallback);
+                            }
+                        });
                     }
                 });
 

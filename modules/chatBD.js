@@ -45,7 +45,7 @@ module.exports= {
     crearConversacion:function(conversacion,functionCallback){
         this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
             if (err) {
-                funcionCallback(null);
+                functionCallback(null);
             } else {
                 var collection = db.collection('conversaciones');
                 collection.insert(conversacion, function (err, result) {

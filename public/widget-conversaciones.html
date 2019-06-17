@@ -45,10 +45,10 @@
                 "<td>"+converacionesMostrar[i].usuario+"</td>"+
                 "<td>"+converacionesMostrar[i].tituloOferta+"</td>"+
                 "<td>"+
-                "<a onclick=eliminar('"+converacionesMostrar[i]._id.toString()+"')>Eliminar  <span class=\"glyphicon glyphicon-comment\"></span></a><br>"+
+                "<a name=\"link_borrarChat\" onclick=eliminar('"+converacionesMostrar[i]._id.toString()+"')>Eliminar  <span class=\"glyphicon glyphicon-remove-circle\"></span></a><br>"+
                 "</td>"+
                 "<td>"+
-                "<a onclick=chatear('"+converacionesMostrar[i].idOferta+"','"+converacionesMostrar[i].usuario+"')>Chat  <span class=\"glyphicon glyphicon-comment\"></span></a><br>"+
+                "<a name=\"link_abrirChat\" onclick=chatear('"+converacionesMostrar[i].idOferta+"','"+converacionesMostrar[i].usuario+"')>Chat  <span class=\"glyphicon glyphicon-comment\"></span></a><br>"+
                 "</td>"+
                 "</tr>" );
 

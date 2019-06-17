@@ -131,6 +131,26 @@ module.exports=function(app,utilBD){
 
         var ofertas=[CH1,CH2,CH3,CH4,CR1,CR2,CR3,CR4,G1,G2,G3,G4,N1,N2,N3,N4,E1,E2,E3,E4];
 
+        mensajes=[crearMensaje("christian@email.com"),crearMensaje("cristina@email.com")];
+        conversacion_CH_CR=crearConversacion("christian@email.com","cristina@email.com",CR1,mensajes);
+        mensajes=[crearMensaje("christian@email.com"),crearMensaje("gema@email.com")];
+        conversacion_CH_GE=crearConversacion("christian@email.com","gema@email.com",G1,mensajes);
+
+        mensajes=[crearMensaje("cristina@email.com"),crearMensaje("gema@email.com")];
+        conversacion_CR_GE=crearConversacion("cristina@email.com","gema@email.com",G1,mensajes);
+        mensajes=[crearMensaje("cristina@email.com"),crearMensaje("enrique@email.com")];
+        conversacion_CR_E=crearConversacion("cristina@email.com","enrique@email.com",E1,mensajes);
+
+        mensajes=[crearMensaje("enrique@email.com"),crearMensaje("noe@email.com")];
+        conversacion_E_N=crearConversacion("enrique@email.com","noe@email.com",N1,mensajes);
+        mensajes=[crearMensaje("enrique@email.com"),crearMensaje("christian@email.com")];
+        conversacion_E_CH=crearConversacion("enrique@email.com","christian@email.com",CH1,mensajes);
+
+        mensajes=[crearMensaje("noe@email.com"),crearMensaje("gema@email.com")];
+        conversacion_N_GE=crearConversacion("noe@email.com","gema@email.com",G1,mensajes);
+
+        conversaciones=[conversacion_CH_CR,conversacion_CH_GE,conversacion_CR_GE,conversacion_CR_E,conversacion_E_N,conversacion_E_CH,conversacion_N_GE];
+
         //
         utilBD.eliminarColecciones(function(result)
         {
@@ -138,10 +158,11 @@ module.exports=function(app,utilBD){
             {
                 res.send("NO SE HA PODIDO CONECTAR CON LA BASE DE DATOS");
             }else{
-                utilBD.insertarDatos(usuarios,ofertas,function(result)
+                utilBD.insertarDatos(usuarios,ofertas,conversaciones,function(result)
                 {
                     if(result!=null)
                     {
+
                         app.get('log').info("Se ha reiniciado la Base de Datos");
                         res.send("SE HA REINICIADO LA BASE DE DATOS CORRECTAMENTE");
                     }else{
@@ -152,14 +173,21 @@ module.exports=function(app,utilBD){
         })
     });
 
+    function crearConversacion(email1,email2,oferta,mensajes){
+        return {
+            miembros:[email1,email2],
+            oferta:oferta,
+            mensajes:mensajes
+        }
+    }
 
-    function crearMensaje(origen, oferta, texto, fecha, leido) {
+    function crearMensaje(origen, oferta) {
         return {
             origen: origen,
             id_oferta: oferta,
-            texto: texto,
-            fecha: fecha,
-            leido: leido,
+            texto: "HOLA",
+            fecha: new Date(),
+            leido: false,
         };
     };
 

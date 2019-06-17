@@ -91,7 +91,7 @@
             $( "#tablaCuerpo" ).append(
                 "<tr id="+arrayMensajes[i]._id+">"+
                 "<td>"+arrayMensajes[i].origen+"</td>" +
-                "<td>"+arrayMensajes[i].texto+"</td>" +
+                "<td name=\"texto_mensaje\">"+arrayMensajes[i].texto+"</td>" +
                 "<td>"+moment(arrayMensajes[i].fecha).format('MMMM Do YYYY, h:mm:ss a')+"</td>" +
                 "<tr>"
             );

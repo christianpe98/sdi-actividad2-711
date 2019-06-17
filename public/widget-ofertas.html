@@ -3,7 +3,7 @@
     <table class="table table-hover">
         <thead>
         <tr>
-            <th>Titulo</th>
+            <th >Titulo</th>
             <th>Descripcion</th>
             <th>Precio(€)</th>
             <th>Email vendedor</th>
@@ -42,12 +42,12 @@
         for (i = 0; i < ofertasMostrar.length; i++) {
             $( "#tablaCuerpo" ).append(
                 "<tr id="+ofertasMostrar[i]._id+">"+
-                "<td>"+ofertasMostrar[i].title+"</td>" +
+                "<td name=\"title_value\">"+ofertasMostrar[i].title+"</td>" +
                 "<td>"+ofertasMostrar[i].description+"</td>" +
                 "<td>"+ofertasMostrar[i].price+"</td>" +
                 "<td>"+ofertasMostrar[i].owner+"</td>" +
                 "<td>"+
-                "<a onclick=chatear('"+ofertasMostrar[i]._id+"','"+ofertasMostrar[i].owner+"')>Chat  <span class=\"glyphicon glyphicon-comment\"></span></a><br>"+
+                "<a name=\"link_chat\"onclick=chatear('"+ofertasMostrar[i]._id+"','"+ofertasMostrar[i].owner+"')>Chat  <span class=\"glyphicon glyphicon-comment\"></span></a><br>"+
                 "</td>"+
                 "</tr>" );
             // Mucho cuidado con las comillas del eliminarCancion
